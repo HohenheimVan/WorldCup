@@ -100,38 +100,43 @@ class AddScoreView(View):
         match = Match.objects.get(pk=id)
         team_1 = Team.objects.get(pk= match.team_1_id)
         team_2 = Team.objects.get(pk= match.team_2_id)
-        group = Team.objects.filter(group= team_2.group)
+        group = Team.objects.filter(group= team_2.group).order_by('pkt')
         form = InputScoresForm(request.POST)
         if form.is_valid():
             team_1_score = form.cleaned_data['team_1_score']
             team_2_score = form.cleaned_data['team_2_score']
-            match.team_1_score = team_1_score
-            match.team_2_score = team_2_score
-            match.save()
-            if team_1_score > team_2_score:
-                team_1.pkt += 3
-                team_1.matches += 1
-                team_1.win += 1
-                team_2.matches += 1
-                team_2.loose += 1
-            elif team_1_score < team_2_score:
-                team_2.pkt += 3
-                team_2.matches += 1
-                team_2.win += 1
-                team_1.matches += 1
-                team_1.loose += 1
+            if match.team_1_score ==None and match.team_2_score == None:
+                match.team_1_score = team_1_score
+                match.team_2_score = team_2_score
+                match.save()
+                if team_1_score > team_2_score:
+                    team_1.pkt += 3
+                    team_1.matches += 1
+                    team_1.win += 1
+                    team_2.matches += 1
+                    team_2.loose += 1
+                elif team_1_score < team_2_score:
+                    team_2.pkt += 3
+                    team_2.matches += 1
+                    team_2.win += 1
+                    team_1.matches += 1
+                    team_1.loose += 1
+                else:
+                    team_1.pkt += 1
+                    team_1.matches += 1
+                    team_1.draw += 1
+                    team_2.pkt += 1
+                    team_2.matches +=1
+                    team_2.draw += 1
+                team_1.save()
+                team_2.save()
+                return render(request, 'addscores.html', {'form': form, 'match': match, 'message': 'Wynik dodany', 'group': group})
             else:
-                team_1.pkt += 1
-                team_1.matches += 1
-                team_1.draw += 1
-                team_2.pkt += 1
-                team_2.matches +=1
-                team_2.draw += 1
-            team_1.save()
-            team_2.save()
-            return render(request, 'addscores.html', {'form': form, 'match': match, 'message': 'Wynik dodany', 'group': group})
-
-
+                match.team_1_score = team_1_score
+                match.team_2_score = team_2_score
+                match.save()
+                return render(request, 'addscores.html',
+                          {'form': form, 'match': match, 'message': 'Wynik dodany', 'group': group})
 
 
 
