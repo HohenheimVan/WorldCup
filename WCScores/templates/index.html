@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h3>Grupa A:</h3>
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for value in group_a %}
+            <tr>
+                <td>{{ value.country }}</td>
+                <td>{{ value.matches }}</td>
+                <td>{{ value.win }}</td>
+                <td>{{ value.draw }}</td>
+                <td>{{ value.loose }}</td>
+                <td>{{ value.FIFA }}</td>
+                <td>{{ value.pkt }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+    <h3>Grupa B:</h3>
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for value in group_b %}
+            <tr>
+                <td>{{ value.country }}</td>
+                <td>{{ value.matches }}</td>
+                <td>{{ value.win }}</td>
+                <td>{{ value.draw }}</td>
+                <td>{{ value.loose }}</td>
+                <td>{{ value.FIFA }}</td>
+                <td>{{ value.pkt }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+    <h3>Grupa C:</h3>
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for value in group_c %}
+            <tr>
+                <td>{{ value.country }}</td>
+                <td>{{ value.matches }}</td>
+                <td>{{ value.win }}</td>
+                <td>{{ value.draw }}</td>
+                <td>{{ value.loose }}</td>
+                <td>{{ value.FIFA }}</td>
+                <td>{{ value.pkt }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+    <h3>Grupa D:</h3>
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for value in group_d %}
+            <tr>
+                <td>{{ value.country }}</td>
+                <td>{{ value.matches }}</td>
+                <td>{{ value.win }}</td>
+                <td>{{ value.draw }}</td>
+                <td>{{ value.loose }}</td>
+                <td>{{ value.FIFA }}</td>
+                <td>{{ value.pkt }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+    <h3>Grupa E:</h3>
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for value in group_e %}
+            <tr>
+                <td>{{ value.country }}</td>
+                <td>{{ value.matches }}</td>
+                <td>{{ value.win }}</td>
+                <td>{{ value.draw }}</td>
+                <td>{{ value.loose }}</td>
+                <td>{{ value.FIFA }}</td>
+                <td>{{ value.pkt }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+    <h3>Grupa F:</h3>
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for value in group_f %}
+            <tr>
+                <td>{{ value.country }}</td>
+                <td>{{ value.matches }}</td>
+                <td>{{ value.win }}</td>
+                <td>{{ value.draw }}</td>
+                <td>{{ value.loose }}</td>
+                <td>{{ value.FIFA }}</td>
+                <td>{{ value.pkt }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+    <h3>Grupa G:</h3>
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for value in group_g %}
+            <tr>
+                <td>{{ value.country }}</td>
+                <td>{{ value.matches }}</td>
+                <td>{{ value.win }}</td>
+                <td>{{ value.draw }}</td>
+                <td>{{ value.loose }}</td>
+                <td>{{ value.FIFA }}</td>
+                <td>{{ value.pkt }}</td>
+            </tr>
+
+        {% endfor %}
+    </table>
+    <h3>Grupa H:</h3>
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for value in group_h %}
+            <tr>
+                <td>{{ value.country }}</td>
+                <td>{{ value.matches }}</td>
+                <td>{{ value.win }}</td>
+                <td>{{ value.draw }}</td>
+                <td>{{ value.loose }}</td>
+                <td>{{ value.FIFA }}</td>
+                <td>{{ value.pkt }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Input Scores</title>
+</head>
+<body>
+<table>
+    <tr>
+        <th>Data</th>
+        <th>Dzień</th>
+        <th>Drużyna 1</th>
+        <th>Drużyna 2</th>
+        <th>Bramki</th>
+        <th>Bramki</th>
+    </tr>
+{% for match in matches %}
+        <tr>
+            <td>{{ match.datetime }}</td>
+            <td>{{ match.day }}</td>
+            <td>{{ match.team_1 }}</td>
+            <td>{{ match.team_2 }}</td>
+            <td>{{ match.team_1_score }}</td>
+            <td>{{ match.team_2_score }}</td>
+            <td><a href="/addscore/{{ match.pk }}/">Wynik</a></td>
+        </tr>
+    {% endfor %}
+</table>
+</body>
+</html>

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <table>
+        <tr>
+            <th>Państwo</th>
+            <th>Mecze</th>
+            <th>Zwycięstwa</th>
+            <th>Remisy</th>
+            <th>Porażki</th>
+            <th>FIFA</th>
+            <th>Pkt.</th>
+        </tr>
+        {% for team in group %}
+            <tr>
+                <td>{{ team.country }}</td>
+                <td>{{ team.matches }}</td>
+                <td>{{ team.win }}</td>
+                <td>{{ team.draw }}</td>
+                <td>{{ team.loose }}</td>
+                <td>{{ team.FIFA }}</td>
+                <td>{{ team.pkt }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+
+    <table>
+        <tr>
+            <th>Data</th>
+            <th>Dzień</th>
+            <th>Drużyna 1</th>
+            <th>Drużyna 2</th>
+            <th>Bramki</th>
+            <th>Bramki</th>
+        </tr>
+        <tr>
+            <td>{{ match.datetime }}</td>
+            <td>{{ match.day }}</td>
+            <td>{{ match.team_1 }}</td>
+            <td>{{ match.team_2 }}</td>
+            <td>{{ match.team_1_score }}</td>
+            <td>{{ match.team_2_score }}</td>
+        </tr>
+    </table>
+    <form action="#" method="post">
+        {{ form.as_p }}
+        <input type="submit" value="Dodaj wynik">
+        {% csrf_token %}
+    </form>
+    {{ message }}
+</body>
+</html>
