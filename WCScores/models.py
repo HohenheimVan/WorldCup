@@ -2,6 +2,8 @@ from django.contrib.auth.models import User
 from django.db import models
 
 # Create your models here.
+
+
 class Team(models.Model):
     country = models.CharField(max_length=16, unique=True)
     group = models.CharField(max_length=1)
@@ -29,4 +31,10 @@ class UserScore(models.Model):
     team_2_score = models.IntegerField()
     match = models.ForeignKey(Match, related_name='match')
     scored = models.BooleanField(default=False)
+
+
+class Scoreboard(models.Model):
+    user = models.ForeignKey(User, related_name= 'user')
+    points = models.IntegerField(default=0)
+
 

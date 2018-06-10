@@ -1,13 +1,16 @@
 import locale
+from datetime import datetime, timedelta
 
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.models import User
+
 from django.shortcuts import render, redirect
 
 from django.views import View
 
-from WCScores.forms import AddTeamForm, AddMatchForm, RegisterForm, LoginForm, InputScoresForm
-from WCScores.models import Team, Match
+from WCScores.forms import AddTeamForm, AddMatchForm, RegisterForm, LoginForm, InputScoresForm, UserScoresForm
+from WCScores.models import Team, Match, UserScore
 
 """
 Env: worldcupEnv,
@@ -28,6 +31,12 @@ ustawic odpowiednia strefe czasową
 
 
 # Create your views here.
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('/')
+
 # Add teams form
 class FormsView(View):
     def get(self, request):
@@ -79,7 +88,18 @@ class IndexView(View):
         return render(request, 'index.html', {'group_a': group_a, 'group_b': group_b, 'group_c': group_c,
                                               'group_d': group_d, 'group_e': group_e, 'group_f': group_f,
                                               'group_g': group_g, 'group_h': group_h})
-
+    def post(self, request):
+        group_a = Team.objects.filter(group='A').order_by('-pkt')
+        group_b = Team.objects.filter(group='B').order_by('-pkt')
+        group_c = Team.objects.filter(group='C').order_by('-pkt')
+        group_d = Team.objects.filter(group='D').order_by('-pkt')
+        group_e = Team.objects.filter(group='E').order_by('-pkt')
+        group_f = Team.objects.filter(group='F').order_by('-pkt')
+        group_g = Team.objects.filter(group='G').order_by('-pkt')
+        group_h = Team.objects.filter(group='H').order_by('-pkt')
+        return render(request, 'index.html', {'group_a': group_a, 'group_b': group_b, 'group_c': group_c,
+                                              'group_d': group_d, 'group_e': group_e, 'group_f': group_f,
+                                              'group_g': group_g, 'group_h': group_h})
 
 class ScoresView(View):
     def get(self, request):
@@ -139,57 +159,54 @@ class AddScoreView(View):
                           {'form': form, 'match': match, 'message': 'Wynik dodany', 'group': group})
 
 
+class UserScoresView(LoginRequiredMixin, View):
+    def get(self, request, id):
+        score = UserScore.objects.filter(match_id=id)
+        user_match = Match.objects.get(id=id)
+        FMT = '%d.%m.%Y %H:%M:%S'
+        s1 = datetime.now().strftime(FMT)
+        s2 = user_match.datetime.strftime(FMT)
+        FMT = '%d.%m.%Y %H:%M:%S'
+        tdelta = datetime.strptime(s2, FMT) - datetime.strptime(s1, FMT)
+
+        if tdelta.seconds <= 0 or tdelta.days < 0:
+            message = 'Mecz już się zaczął, nie można obstawiać'
+            return render(request, 'userscores.html',
+                          {'match': user_match, 'score': score, 'message': message})
+        form = UserScoresForm()
+        try:
+            user_score = score.get(name=request.user)
+            message = 'Juz obstawiłeś wynik, możesz aktualizować swój typ do momentu rozpoczęcia meczu'
+            return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score, 'message': message, 'message2': 'Do meczu zostało: ' + str(tdelta)})
+        except:
+            return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score, 'message2': 'Do meczu zostało' + str(tdelta)})
+
+    def post(self, request, id):
+        user_match = Match.objects.get(id=id)
+        form = UserScoresForm(request.POST)
+        score = UserScore.objects.filter(match_id=id)
+        try:
+            user_score = score.get(name=request.user)
+            if form.is_valid():
+                user_score.user = User.objects.get(id=request.user.pk)
+                user_score.team_1_score = form.cleaned_data['team_1_score']
+                user_score.team_2_score = form.cleaned_data['team_2_score']
+                user_score.save()
+                message = 'zaktualizowano Twoj typ'
+                return render(request, 'userscores.html',
+                              {'form': form, 'match': user_match, 'score': score, 'message': message})
 
 
+            return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score})
+        except:
+            if form.is_valid():
+                user = User.objects.get(id=request.user.pk)
+                team_1_score = form.cleaned_data['team_1_score']
+                team_2_score = form.cleaned_data['team_2_score']
+                UserScore.objects.create(name=user, team_1_score=team_1_score, team_2_score=team_2_score, match=user_match)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+                score = UserScore.objects.filter(match_id=id)
+                return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score})
 
 
 

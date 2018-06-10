@@ -16,7 +16,8 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 
-from WCScores.views import FormsView, MatchFormView, IndexView, ScoresView, LoginView, RegisterView, AddScoreView
+from WCScores.views import FormsView, MatchFormView, IndexView, ScoresView, LoginView, RegisterView, AddScoreView, \
+    UserScoresView, logout_view
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -27,6 +28,8 @@ urlpatterns = [
     url(r'^login/$', LoginView.as_view()),
     url(r'^register/$', RegisterView.as_view()),
     url(r'^addscore/(?P<id>(\d+))/$', AddScoreView.as_view()),
+    url(r'^userscores/(?P<id>(\d+))/$', UserScoresView.as_view()),
+    url(r'^logout/$', logout_view),
 
 
 ]

@@ -5,14 +5,21 @@
     <title>Input Scores</title>
 </head>
 <body>
+    <a href="/scores/">Mecze i wyniki</a>
+    <a href="/login/">zaloguj sie</a>
+    <a href="/register/">Zarejestruj sie</a>
+    <a href="/">Głowna</a>
+    {{ request.user.username }}
+    <a href="/logout/">(wyloguj)</a>
+
+
 <table>
     <tr>
         <th>Data</th>
         <th>Dzień</th>
         <th>Drużyna 1</th>
         <th>Drużyna 2</th>
-        <th>Bramki</th>
-        <th>Bramki</th>
+        <th colspan="2">Bramki</th>
     </tr>
 {% for match in matches %}
         <tr>
@@ -20,9 +27,10 @@
             <td>{{ match.day }}</td>
             <td>{{ match.team_1 }}</td>
             <td>{{ match.team_2 }}</td>
-            <td>{{ match.team_1_score }}</td>
-            <td>{{ match.team_2_score }}</td>
+            <td align="right">{{ match.team_1_score }} :</td>
+            <td align="left">{{ match.team_2_score }}</td>
             <td><a href="/addscore/{{ match.pk }}/">Wynik</a></td>
+            <td><a href="/userscores/{{ match.pk }}/">Typuj wynik</a></td>
         </tr>
     {% endfor %}
 </table>

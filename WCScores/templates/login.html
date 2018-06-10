@@ -5,7 +5,13 @@
     <title>Title</title>
 </head>
 <body>
-    <form action="/" method="post">
+    <a href="/scores/">Mecze i wyniki</a>
+    <a href="/login/">zaloguj sie</a>
+    <a href="/register/">Zarejestruj sie</a>
+    <a href="/">Głowna</a>
+    {{ request.user.username }}
+
+    <form action="" method="post">
         {% csrf_token %}
         {{ form.as_p }}
         <input type="submit" value="Zapisz">

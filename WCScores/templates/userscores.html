@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+    <a href="/scores/">Mecze i wyniki</a>
+    <a href="/login/">zaloguj sie</a>
+    <a href="/register/">Zarejestruj sie</a>
+    <a href="/">Głowna</a>
+    {{ request.user.username }}
+    <a href="/logout/">(wyloguj)</a>
+
+
+<table>
+    <tr>
+        <th>Data</th>
+        <th>Dzień</th>
+        <th>Drużyna 1</th>
+        <th>Drużyna 2</th>
+        <th colspan="2">Bramki</th>
+    </tr>
+    <tr>
+        <td>{{ match.datetime }}</td>
+        <td>{{ match.day }}</td>
+        <td>{{ match.team_1 }}</td>
+        <td>{{ match.team_2 }}</td>
+        <td align="right">{{ match.team_1_score }} :</td>
+        <td align="left">{{ match.team_2_score }}</td>
+    </tr>
+    {% if score %}
+    <tr>
+        <th><h4>Typy na ten mecz:</h4></th>
+    </tr>
+    <tr>
+        <th>Data dodania</th>
+        <th>Użytkownik</th>
+        <th>Druzyna 1 </th>
+        <th>Druzyna 2 </th>
+        <th colspan="2">Typowany wynik </th>
+    </tr>
+    {% for value in score %}
+        <tr>
+            <td>{{ value.datetime }}</td>
+            <td>{{ value.name }}</td>
+            <td>{{ match.team_1 }}</td>
+            <td>{{ match.team_2 }}</td>
+            <td align="right">{{ value.team_1_score }} :</td>
+            <td align="left">{{ value.team_2_score }}</td>
+        </tr>
+    {% endfor %}
+        {% else %}
+        <tr>
+            <td>Nikt jeszcze nie typuje tego meczu</td>
+        </tr>
+    {% endif %}
+</table>
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <input type="submit" value="Zapisz">
+    </form>
+    {{ message }}
+    <br>{{ message2 }}
+</body>
+</html>
