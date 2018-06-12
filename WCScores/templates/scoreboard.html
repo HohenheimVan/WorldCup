@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <table>
+        <tr>
+            <th>Użytkownik</th>
+            <th>Ilość typowanych</th>
+            <th>Trafiony wynik</th>
+            <th>Trafiony zwycięzca</th>
+            <th>Pkt</th>
+        </tr>
+    {% for score in scoreboard %}
+        <tr>
+            <td>{{ score.user }}</td>
+            <td>{{ score.matches_number }}</td>
+            <td>{{ score.perfect }}</td>
+            <td>{{ score.scored }}</td>
+            <td>{{ score.points }}</td>
+        </tr>
+    {% endfor %}
+    </table>
+</body>
+</html>

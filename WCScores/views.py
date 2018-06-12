@@ -118,7 +118,7 @@ class AddScoreView(View):
 
     def post(self, request, id):
         match = Match.objects.get(pk=id)
-        score = UserScore.objects.filter(match_id=id)
+        users_scores = UserScore.objects.filter(match_id=id)
         team_1 = Team.objects.get(pk= match.team_1_id)
         team_2 = Team.objects.get(pk= match.team_2_id)
         group = Team.objects.filter(group= team_2.group).order_by('-pkt')
@@ -156,6 +156,23 @@ class AddScoreView(View):
             team_2.save()
 
             #add scores to scoreboard
+            for score in users_scores:
+                if team_1_score == score.team_1_score and team_2_score == score.team_2_score:
+                    score.perfect = True
+                    score.scored = False
+                elif team_1_score > team_2_score and score.team_1_score > score.team_2_score:
+                    score.scored = True
+                    score.perfect = False
+                elif team_1_score < team_2_score and score.team_1_score < score.team_2_score:
+                    score.scored = True
+                    score.perfect = False
+                elif team_1_score == team_2_score and score.team_1_score == score.team_2_score:
+                    score.scored = True
+                    score.perfect = False
+                else:
+                    score.perfect = False
+                    score.scored = False
+                score.save()
 
 
 
@@ -177,7 +194,7 @@ class UserScoresView(LoginRequiredMixin, View):
                           {'match': user_match, 'score': score, 'message': message})
         form = UserScoresForm()
         try:
-            user_score = score.get(name=request.user)
+            score.get(name=request.user)
             message = 'Juz obstawiłeś wynik, możesz aktualizować swój typ do momentu rozpoczęcia meczu'
             return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score,
                                                        'message': message, 'message2': 'Do meczu zostało: ' + str(tdelta)})
@@ -219,11 +236,20 @@ class UserScoresView(LoginRequiredMixin, View):
                                                            'message2': 'Do meczu zostało: ' + str(tdelta)})
 
 
+class ScoreboardView(View):
+    def get(self, request):
+        users = User.objects.all()
+        for usr in users:
+            user_scores = UserScore.objects.filter(name=usr)
 
-
-
-
-
+            user_board = Scoreboard.objects.get(user=usr)
+            user_board.matches_number = user_scores.count()
+            user_board.scored = user_scores.filter(scored=True).count()
+            user_board.perfect = user_scores.filter(perfect=True).count()
+            user_board.points = user_board.scored + user_board.perfect * 3
+            user_board.save()
+        scoreboard = Scoreboard.objects.all()
+        return render(request, 'scoreboard.html', {'scoreboard': scoreboard})
 
 
 class LoginView(View):

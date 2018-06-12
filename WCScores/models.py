@@ -39,6 +39,6 @@ class UserScore(models.Model):
 class Scoreboard(models.Model):
     user = models.ForeignKey(User, related_name= 'user')
     matches_number = models.IntegerField(default=0)
-    perfectlyscored = models.IntegerField(default=0)
-    justwinner = models.IntegerField(default=0)
+    scored = models.IntegerField(default=0)
+    perfect = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
