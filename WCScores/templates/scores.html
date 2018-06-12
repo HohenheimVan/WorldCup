@@ -11,6 +11,8 @@
     <a href="/">Głowna</a>
     {{ request.user.username }}
     <a href="/logout/">(wyloguj)</a>
+    <a href="/scoreboard/">Tablica wyników</a>
+
 
 
 <table>
@@ -20,6 +22,11 @@
         <th>Drużyna 1</th>
         <th>Drużyna 2</th>
         <th colspan="2">Bramki</th>
+        <th></th>
+        <th></th>
+        {% for user in users %}
+            <th colspan="2">{{ user.username }}</th>
+        {% endfor %}
     </tr>
 {% for match in matches %}
         <tr>
@@ -31,6 +38,16 @@
             <td align="left">{{ match.team_2_score }}</td>
             <td><a href="/addscore/{{ match.pk }}/">Wynik</a></td>
             <td><a href="/userscores/{{ match.pk }}/">Typuj wynik</a></td>
+            {% for user in users %}
+                {% for score in scores %}
+                    {% if score.name == user %}
+                        {% if score.match == match %}
+                            <td align="right">{{ score.team_1_score }} :</td>
+                            <td>{{ score.team_2_score }}</td>
+                        {% endif %}
+                    {% endif %}
+                {% endfor %}
+            {% endfor %}
         </tr>
     {% endfor %}
 </table>

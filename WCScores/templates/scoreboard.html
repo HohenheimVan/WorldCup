@@ -5,6 +5,14 @@
     <title>Title</title>
 </head>
 <body>
+    <a href="/scores/">Mecze i wyniki</a>
+    <a href="/login/">zaloguj sie</a>
+    <a href="/register/">Zarejestruj sie</a>
+    <a href="/">Głowna</a>
+    {{ request.user.username }}
+    <a href="/logout/">(wyloguj)</a>
+    <a href="/scoreboard/">Tablica wyników</a>
+
     <table>
         <tr>
             <th>Użytkownik</th>
@@ -16,10 +24,10 @@
     {% for score in scoreboard %}
         <tr>
             <td>{{ score.user }}</td>
-            <td>{{ score.matches_number }}</td>
-            <td>{{ score.perfect }}</td>
-            <td>{{ score.scored }}</td>
-            <td>{{ score.points }}</td>
+            <td align="center">{{ score.matches_number }}</td>
+            <td align="center">{{ score.perfect }}</td>
+            <td align="center">{{ score.scored }}</td>
+            <td align="center">{{ score.points }}</td>
         </tr>
     {% endfor %}
     </table>

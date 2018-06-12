@@ -10,6 +10,9 @@
     <a href="/register/">Zarejestruj sie</a>
     <a href="/">Głowna</a>
     {{ request.user.username }}
+    <a href="/logout/">(wyloguj)</a>
+    <a href="/scoreboard/">Tablica wyników</a>
+
 
     <form action="" method="post">
         {% csrf_token %}

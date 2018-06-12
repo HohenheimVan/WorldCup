@@ -103,8 +103,11 @@ class IndexView(View):
 
 class ScoresView(View):
     def get(self, request):
+
         matches = Match.objects.all().order_by('datetime')
-        return render(request, 'scores.html', {'matches': matches})
+        scores = UserScore.objects.all()
+        users = User.objects.all()
+        return render(request, 'scores.html', {'matches': matches, 'scores': scores, 'users': users})
 
 
 class AddScoreView(View):

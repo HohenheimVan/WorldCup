@@ -5,13 +5,14 @@
     <title>forms</title>
 </head>
 <body>
-
     <a href="/scores/">Mecze i wyniki</a>
     <a href="/login/">zaloguj sie</a>
     <a href="/register/">Zarejestruj sie</a>
     <a href="/">Głowna</a>
     {{ request.user.username }}
     <a href="/logout/">(wyloguj)</a>
+    <a href="/scoreboard/">Tablica wyników</a>
+
 
     <form action="/addmatch/" method="post">
         {% csrf_token %}
