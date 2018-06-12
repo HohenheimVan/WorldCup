@@ -1,5 +1,5 @@
 import locale
-from datetime import datetime, timedelta
+from datetime import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -111,52 +111,51 @@ class AddScoreView(View):
     def get(self, request, id):
         match = Match.objects.get(pk=id)
         team_2 = Team.objects.get(pk=match.team_2_id)
-        group = Team.objects.filter(group=team_2.group)
+        group = Team.objects.filter(group=team_2.group).order_by('-pkt')
         match = Match.objects.get(pk=id)
         form = InputScoresForm()
         return render(request, 'addscores.html', {'form': form, 'match': match, 'group': group})
 
     def post(self, request, id):
         match = Match.objects.get(pk=id)
+        score = UserScore.objects.filter(match_id=id)
         team_1 = Team.objects.get(pk= match.team_1_id)
         team_2 = Team.objects.get(pk= match.team_2_id)
-        group = Team.objects.filter(group= team_2.group).order_by('pkt')
+        group = Team.objects.filter(group= team_2.group).order_by('-pkt')
         form = InputScoresForm(request.POST)
         if form.is_valid():
             team_1_score = form.cleaned_data['team_1_score']
             team_2_score = form.cleaned_data['team_2_score']
-            if match.team_1_score ==None and match.team_2_score == None:
-                match.team_1_score = team_1_score
-                match.team_2_score = team_2_score
-                match.save()
-                if team_1_score > team_2_score:
-                    team_1.pkt += 3
-                    team_1.matches += 1
-                    team_1.win += 1
-                    team_2.matches += 1
-                    team_2.loose += 1
-                elif team_1_score < team_2_score:
-                    team_2.pkt += 3
-                    team_2.matches += 1
-                    team_2.win += 1
-                    team_1.matches += 1
-                    team_1.loose += 1
-                else:
-                    team_1.pkt += 1
-                    team_1.matches += 1
-                    team_1.draw += 1
-                    team_2.pkt += 1
-                    team_2.matches +=1
-                    team_2.draw += 1
-                team_1.save()
-                team_2.save()
-                return render(request, 'addscores.html', {'form': form, 'match': match, 'message': 'Wynik dodany', 'group': group})
+            match.team_1_score = team_1_score
+            match.team_2_score = team_2_score
+            if team_1_score > team_2_score:
+                match.winner_id = team_1.id
+                match.draw = False
+            elif team_1_score < team_2_score:
+                match.winner_id = team_2.id
+                match.draw = False
             else:
-                match.team_1_score = team_1_score
-                match.team_2_score = team_2_score
-                match.save()
-                return render(request, 'addscores.html',
-                          {'form': form, 'match': match, 'message': 'Wynik dodany', 'group': group})
+                match.draw = True
+                match.winner_id = ""
+            match.save()
+            team_1.matches = Match.objects.filter(team_1=team_1).filter(team_1_score__isnull=False).count() \
+                             + Match.objects.filter(team_2=team_1).filter(team_1_score__isnull=False).count()
+            team_2.matches = Match.objects.filter(team_1=team_2).filter(team_1_score__isnull=False).count() \
+                             + Match.objects.filter(team_2=team_2).filter(team_1_score__isnull=False).count()
+            team_1.win = Match.objects.filter(winner=team_1).count()
+            team_2.win = Match.objects.filter(winner=team_2).count()
+            team_1.draw = Match.objects.filter(team_1=team_1).filter(draw=True).count()\
+                          + Match.objects.filter(team_2=team_1).filter(draw=True).count()
+            team_2.draw = Match.objects.filter(team_1=team_2).filter(draw=True).count()\
+                          + Match.objects.filter(team_2=team_2).filter(draw=True).count()
+            team_1.loose = team_1.matches - team_1.win - team_1.draw
+            team_2.loose = team_2.matches - team_2.win - team_2.draw
+            team_1.pkt = team_1.win * 3 + team_1.draw
+            team_2.pkt = team_2.win * 3 + team_2.draw
+            team_1.save()
+            team_2.save()
+
+            return render(request, 'addscores.html', {'form': form, 'match': match, 'message': 'Wynik dodany', 'group': group})
 
 
 class UserScoresView(LoginRequiredMixin, View):
@@ -166,7 +165,6 @@ class UserScoresView(LoginRequiredMixin, View):
         FMT = '%d.%m.%Y %H:%M:%S'
         s1 = datetime.now().strftime(FMT)
         s2 = user_match.datetime.strftime(FMT)
-        FMT = '%d.%m.%Y %H:%M:%S'
         tdelta = datetime.strptime(s2, FMT) - datetime.strptime(s1, FMT)
 
         if tdelta.seconds <= 0 or tdelta.days < 0:
@@ -177,14 +175,20 @@ class UserScoresView(LoginRequiredMixin, View):
         try:
             user_score = score.get(name=request.user)
             message = 'Juz obstawiłeś wynik, możesz aktualizować swój typ do momentu rozpoczęcia meczu'
-            return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score, 'message': message, 'message2': 'Do meczu zostało: ' + str(tdelta)})
+            return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score,
+                                                       'message': message, 'message2': 'Do meczu zostało: ' + str(tdelta)})
         except:
-            return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score, 'message2': 'Do meczu zostało' + str(tdelta)})
+            return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score,
+                                                       'message2': 'Do meczu zostało' + str(tdelta)})
 
     def post(self, request, id):
         user_match = Match.objects.get(id=id)
         form = UserScoresForm(request.POST)
         score = UserScore.objects.filter(match_id=id)
+        FMT = '%d.%m.%Y %H:%M:%S'
+        s1 = datetime.now().strftime(FMT)
+        s2 = user_match.datetime.strftime(FMT)
+        tdelta = datetime.strptime(s2, FMT) - datetime.strptime(s1, FMT)
         try:
             user_score = score.get(name=request.user)
             if form.is_valid():
@@ -194,7 +198,8 @@ class UserScoresView(LoginRequiredMixin, View):
                 user_score.save()
                 message = 'zaktualizowano Twoj typ'
                 return render(request, 'userscores.html',
-                              {'form': form, 'match': user_match, 'score': score, 'message': message})
+                              {'form': form, 'match': user_match, 'score': score, 'message': message,
+                               'message2': 'Do meczu zostało: ' + str(tdelta)})
 
 
             return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score})
@@ -206,7 +211,8 @@ class UserScoresView(LoginRequiredMixin, View):
                 UserScore.objects.create(name=user, team_1_score=team_1_score, team_2_score=team_2_score, match=user_match)
 
                 score = UserScore.objects.filter(match_id=id)
-                return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score})
+                return render(request, 'userscores.html', {'form': form, 'match': user_match, 'score': score,
+                                                           'message2': 'Do meczu zostało: ' + str(tdelta)})
 
 
 

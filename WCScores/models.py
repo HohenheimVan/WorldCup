@@ -23,6 +23,8 @@ class Match(models.Model):
     team_2 = models.ForeignKey(Team, related_name='team_2')
     team_1_score = models.IntegerField(null=True, blank=True)
     team_2_score = models.IntegerField(null=True, blank=True)
+    winner = models.ForeignKey(Team, related_name='winner', null=True, blank=True)
+    draw = models.BooleanField(default=False)
 
 class UserScore(models.Model):
     datetime = models.DateTimeField(auto_now=True)
@@ -31,10 +33,12 @@ class UserScore(models.Model):
     team_2_score = models.IntegerField()
     match = models.ForeignKey(Match, related_name='match')
     scored = models.BooleanField(default=False)
+    perfect = models.BooleanField(default=False)
 
 
 class Scoreboard(models.Model):
     user = models.ForeignKey(User, related_name= 'user')
+    matches_number = models.IntegerField(default=0)
+    perfectlyscored = models.IntegerField(default=0)
+    justwinner = models.IntegerField(default=0)
     points = models.IntegerField(default=0)
-
-
