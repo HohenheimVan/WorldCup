@@ -11,6 +11,7 @@ class AddTeamForm(ModelForm):
         fields = ['country', 'group', 'FIFA']
 
 
+
 class AddMatchForm(forms.Form):
     datetime = forms.SplitDateTimeField(input_date_formats=['%d.%m.%Y'],
                                         input_time_formats=['%H:%M'],
@@ -21,14 +22,13 @@ class AddMatchForm(forms.Form):
 
 
 class InputScoresForm(forms.Form):
-    team_1_score = forms.IntegerField(max_value=20)
-    team_2_score = forms.IntegerField(max_value=20)
+    team_1_score = forms.IntegerField(min_value=0, max_value=20)
+    team_2_score = forms.IntegerField(min_value=0, max_value=20)
 
 
-class UserScoresForm(ModelForm):
-    class Meta:
-        model = UserScore
-        fields = ['team_1_score', 'team_2_score']
+class UserScoresForm(forms.Form):
+    team_1_score = forms.IntegerField(min_value=0, max_value=20)
+    team_2_score = forms.IntegerField(min_value=0, max_value=20)
 
 
 class LoginForm(forms.Form):

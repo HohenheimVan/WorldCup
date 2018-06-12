@@ -10,7 +10,7 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from WCScores.forms import AddTeamForm, AddMatchForm, RegisterForm, LoginForm, InputScoresForm, UserScoresForm
-from WCScores.models import Team, Match, UserScore
+from WCScores.models import Team, Match, UserScore, Scoreboard
 
 """
 Env: worldcupEnv,
@@ -155,6 +155,10 @@ class AddScoreView(View):
             team_1.save()
             team_2.save()
 
+            #add scores to scoreboard
+
+
+
             return render(request, 'addscores.html', {'form': form, 'match': match, 'message': 'Wynik dodany', 'group': group})
 
 
@@ -222,9 +226,6 @@ class UserScoresView(LoginRequiredMixin, View):
 
 
 
-
-
-
 class LoginView(View):
     def get(self, request):
         form = LoginForm()
@@ -264,8 +265,9 @@ class RegisterView(View):
                 return render(request, 'register.html', {'form': form, 'message': 'The password does not match'})
             else:
                 try:
-                    User.objects.create_user(username=username, email=email, password=password, first_name=first_name,
+                    user = User.objects.create_user(username=username, email=email, password=password, first_name=first_name,
                                              last_name=last_name)
+                    Scoreboard.objects.create(user=user)
                     return render(request, 'register.html', {'form': form, 'message': 'User created'})
                 except:
                     return render(request, 'register.html', {'form': form, 'message': 'Username already exist'})
